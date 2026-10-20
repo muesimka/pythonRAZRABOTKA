@@ -1,34 +1,64 @@
 import tkinter as tk
+def press(value):
+    if value == "=":
+        try:
+            result = eval(expression.get())
+            expression.set(str(result))
+        except:
+            expression.set("Ошибка")
+            window.after(1500, reset)
 
-score = 0
+    elif value == "C":
+        expression.set("")
+    else:
+        expression.set(expression.get() + value)
 
-def start():
-    global score
-    score += 1
-    label.config(text=str(score))
 
-root = tk.Tk()
+def reset():
+    expression.set("")
 
-root.geometry("500x500")
-root.iconbitmap("../assets/icon.ico")
 
-header = tk.Frame(root, bg="black", height=100, width=400)
-header.pack(side="top", fill="x",)
+window = tk.Tk()
+window.title("Калькулятор")
+window.geometry("300x400")
+window.resizable(False, False)
 
-footer = tk.Frame(root, bg="black", height=100, width=400)
-footer.pack(side="bottom", fill="x")
+expression = tk.StringVar()
 
-main = tk.Frame(root, bg="light blue", height=400, width=400)
-main.pack(side="bottom", fill="x",)
+display = tk.Entry(
+    window,
+    textvariable=expression,
+    font=("Arial", 24),
+    justify="right",
+    state="readonly"
+)
+display.pack(fill="both", padx=10, pady=10, ipady=10)
 
-button_start = tk.Button(main, text="Start", command=start)
-button_start.pack(expand=1)
+buttons = [
+    ("1", 1, 0), ("2", 1, 1), ("3", 1, 2), ("/", 1, 3),
+    ("4", 2, 0), ("5", 2, 1), ("6", 2, 2), ("*", 2, 3),
+    ("7", 3, 0), ("8", 3, 1), ("9", 3, 2), ("-", 3, 3),
+    ("C", 4, 0), ("0", 4, 1), ("=", 4, 2), ("+", 4, 3),
+]
 
-label = tk.Label(header, text= '0' , height=2, width=10)
-label.pack()
+frame = tk.Frame(window)
+frame.pack(expand=True, fill="both", padx=10, pady=10)
 
-entry = tk.Entry(header)
-entry.pack()
+for text, row, column in buttons:
+    button = tk.Button(frame, text=text, font=("Arial", 20), command=lambda value=text: press(value))
+    button.grid(
+        row=row,
+        column=column,
+        sticky="nsew",
+        padx=3,
+        pady=3
+    )
 
-root.mainloop()
+for i in range(4):
+    frame.columnconfigure(i, weight=1)
+
+for i in range(1, 5):
+    frame.rowconfigure(i, weight=1)
+
+window.mainloop()
 
